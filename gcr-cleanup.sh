@@ -6,9 +6,9 @@ project="$1"
 retention_period="$2"
 
 # Retrieving image list and timestamps
-images=`gcloud container images list --repository gcr.io/"$project" | grep -v NAME`
-cutoff_date=$(date -d "$retention_peiriod days ago" +%s)
-time_now=`date +%s`
+images=$(gcloud container images list --repository gcr.io/"$project" | grep -v NAME)
+cutoff_date=$(date -d "$retention_period days ago" +%s)
+time_now=$(date +%s)
 
 # Temporary directory for log files
 folderPath="/tmp/gcrCleanup_${time_now}"
@@ -18,13 +18,13 @@ mkdir -p "$folderPath"
 for image in $images;
 do
     echo "Processing ${image}"
-    fileName=`echo $image | rev | cut -d '/' -f1 | rev`
+    fileName=$(echo "$image" | rev | cut -d '/' -f1 | rev)
     filePath="${folderPath}/${fileName}.txt"
     touch "$filePath"
 
     # Clean untagged images older than a day
     echo "Deleting untagged images, if any"
-    images_withoutTag=`gcloud container images list-tags "$image" --filter='-tags:*' --format="get(digest, timestamp.day)" | awk 'IF $2 > 1 {print $1}'`
+    images_withoutTag=$(gcloud container images list-tags "$image" --filter='-tags:*' --format="get(digest, timestamp.day)" | awk 'if ($2 > 1) {print $1}')
     for image_withoutTag in $images_withoutTag;
     do
       echo "Deleting ${image}@${image_withoutTag}"
@@ -32,14 +32,14 @@ do
     done
 
     # List and process image tags
-    echo "rertieving list of ${image} tags"
-    gcloud container images list-tags "$image" >> $filePath
+    echo "retrieving list of ${image} tags"
+    gcloud container images list-tags "$image" >> "$filePath"
     {
-      read
+      read -r
       while IFS=' ' read -r DIGEST TAGS TIMESTAMP
         do
           echo "DIGEST $DIGEST has TAGS $TAGS and TIMESTAMP $TIMESTAMP"
-          TIMESTAMP_epoch=`date -d $(echo "$TIMESTAMP" | xargs) +%s`
+          TIMESTAMP_epoch=$(date -d "$(echo "$TIMESTAMP" | xargs)" +%s)
           imageTag=$(echo "$TAGS" | xargs)
 
           # Compare the two timestamps
@@ -55,5 +55,5 @@ do
             echo "The timestamp is NOT older than ${retention_period} days. DIGEST: $DIGEST"
           fi
         done
-    } < $filePath
+    } < "$filePath"
 done
