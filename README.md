@@ -1,9 +1,13 @@
 # gar-cleanup
 
-A policy-driven container image lifecycle manager for **Google Artifact Registry (GAR)**. Replaces the deprecated `gcr.io` shell script with a production-grade Go binary that runs as a scheduled Cloud Run Job.
+> **Reduce GCP storage costs by automatically cleaning up stale container images.**
+
+A policy-driven container image lifecycle manager for **Google Artifact Registry (GAR)**. Replaces the deprecated `gcr.io` shell script with a production-grade Go binary that runs as a scheduled **Cloud Run Job** — define retention rules in YAML, and let the tool handle the rest.
 
 [![CI](https://github.com/senet/gcr-cleanup/actions/workflows/ci.yml/badge.svg)](https://github.com/senet/gcr-cleanup/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![Go](https://img.shields.io/badge/Go-1.24+-00ADD8?logo=go&logoColor=white)](https://go.dev)
+[![GCP](https://img.shields.io/badge/Google%20Cloud-Artifact%20Registry-4285F4?logo=google-cloud&logoColor=white)](https://cloud.google.com/artifact-registry)
 
 ## Features
 
@@ -13,6 +17,31 @@ A policy-driven container image lifecycle manager for **Google Artifact Registry
 - **BigQuery audit trail** — every deletion recorded for cost attribution *(phase 4)*
 - **Semver protection** — `v1.2.3`-style tags are never deleted unless explicitly allowed
 - **Terraform IaC** — Cloud Run Job + Scheduler + BigQuery table ready to deploy
+
+## Why gar-cleanup?
+
+| | Manual cleanup | Deprecated `gcr.io` scripts | **gar-cleanup** |
+|---|---|---|---|
+| Automated | No | Partial | **Yes — scheduled Cloud Run Job** |
+| Policy-driven | No | No | **Yes — YAML retention rules** |
+| Kubernetes-aware | No | No | **Yes — protects in-use images** |
+| Auditable | No | No | **Yes — BigQuery audit trail** |
+| Actively maintained | N/A | **Deprecated** | **Yes** |
+
+## Use Cases
+
+- **Cost Optimization** — automatically delete stale images to reduce GAR storage spend
+- **Repository Hygiene** — remove untagged and orphaned digests on a schedule
+- **Compliance & Audit** — every deletion logged to BigQuery for cost attribution and reporting
+- **Kubernetes Safety** — images referenced by running Pods and ReplicaSets are never deleted
+
+## How It Works
+
+```
+1. Define policy    ──▶  policy.yaml (retention rules, tag protection, dry-run toggle)
+2. Schedule run     ──▶  Cloud Run Job triggered daily by Cloud Scheduler
+3. Images cleaned   ──▶  Stale images deleted safely; audit events streamed to BigQuery
+```
 
 ## Quick Start
 
@@ -116,3 +145,7 @@ To report a vulnerability, see [.github/SECURITY.md](.github/SECURITY.md). **Do 
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE).
+
+---
+
+<sub>**Related topics:** container image lifecycle, Google Artifact Registry cleanup, GCP cost optimization, Kubernetes image garbage collection, container retention policy, Cloud Run scheduled jobs, DevOps automation, SRE tooling, infrastructure as code, policy-as-code</sub>
