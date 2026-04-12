@@ -139,7 +139,6 @@ func (e *Engine) processRepo(ctx context.Context, repo string, protected map[str
 
 	for i, img := range images {
 		reason, action := e.evaluateImage(ctx, img, i, cutoff, protected)
-		_ = reason
 
 		switch action {
 		case actionDelete:
