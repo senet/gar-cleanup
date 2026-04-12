@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"sort"
 	"time"
 
 	"github.com/senet/gar-cleanup/internal/audit"
@@ -241,9 +242,7 @@ func (e *Engine) deleteImage(ctx context.Context, repo string, img registry.Imag
 
 // sortByPushedAtDesc sorts images newest-first in-place.
 func sortByPushedAtDesc(images []registry.Image) {
-	for i := 1; i < len(images); i++ {
-		for j := i; j > 0 && images[j].PushedAt.After(images[j-1].PushedAt); j-- {
-			images[j], images[j-1] = images[j-1], images[j]
-		}
-	}
+	sort.Slice(images, func(i, j int) bool {
+		return images[i].PushedAt.After(images[j].PushedAt)
+	})
 }

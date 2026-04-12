@@ -10,9 +10,9 @@ variable "region" {
 }
 
 variable "image" {
-  description = "Container image for the gar-cleanup Cloud Run job"
+  description = "Container image for the gar-cleanup Cloud Run job (replace YOUR-PROJECT-ID)"
   type        = string
-  default     = "us-central1-docker.pkg.dev/PROJECT/gar-cleanup/gar-cleanup:latest"
+  default     = "us-central1-docker.pkg.dev/YOUR-PROJECT-ID/gar-cleanup/gar-cleanup:latest"
 }
 
 variable "schedule" {
