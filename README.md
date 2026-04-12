@@ -4,7 +4,7 @@
 
 A policy-driven container image lifecycle manager for **Google Artifact Registry (GAR)**. Replaces the deprecated `gcr.io` shell script with a production-grade Go binary that runs as a scheduled **Cloud Run Job** — define retention rules in YAML, and let the tool handle the rest.
 
-[![CI](https://github.com/senet/gcr-cleanup/actions/workflows/ci.yml/badge.svg)](https://github.com/senet/gcr-cleanup/actions/workflows/ci.yml)
+[![CI](https://github.com/senet/gar-cleanup/actions/workflows/ci.yml/badge.svg)](https://github.com/senet/gar-cleanup/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Go](https://img.shields.io/badge/Go-1.24+-00ADD8?logo=go&logoColor=white)](https://go.dev)
 [![GCP](https://img.shields.io/badge/Google%20Cloud-Artifact%20Registry-4285F4?logo=google-cloud&logoColor=white)](https://cloud.google.com/artifact-registry)

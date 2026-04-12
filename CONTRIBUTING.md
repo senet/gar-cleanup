@@ -7,8 +7,8 @@ Thank you for your interest in contributing to gar-cleanup!
 1. Install Go 1.24+
 2. Clone the repo:
    ```bash
-   git clone https://github.com/senet/gcr-cleanup.git
-   cd gcr-cleanup
+   git clone https://github.com/senet/gar-cleanup.git
+   cd gar-cleanup
    ```
 3. Build:
    ```bash

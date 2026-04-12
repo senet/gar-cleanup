@@ -28,10 +28,10 @@ The system provides:
 
 | Phase | Scope | Status |
 |-------|-------|--------|
-| **1 – Core Engine** | Go binary, policy engine, GAR stub client, dry-run mode | ✅ Scaffolded |
-| **2 – K8s Guard** | client-go integration; protect digests in use by Pods/RS | 🔲 Stub |
-| **3 – Real GAR Client** | Artifact Registry REST API calls via google.golang.org/api | 🔲 Stub |
-| **4 – BigQuery Audit** | Stream deletion events to BQ for dashboards | 🔲 Stub |
+| **1 – Core Engine** | Go binary, Cobra CLI, policy engine, engine orchestration, dry-run mode | ✅ Done |
+| **2 – K8s Guard** | client-go integration; protect digests in use by Pods/RS | 🔲 Stub (`NoopGuard` + `ClusterGuard` interface ready) |
+| **3 – Real GAR Client** | Artifact Registry REST API calls via google.golang.org/api | 🔲 Stub (`GARClient` scaffolded, methods return nil) |
+| **4 – BigQuery Audit** | Stream deletion events to BQ for dashboards | 🔲 Stub (`BigQueryWriter` scaffolded, `LogWriter` active) |
 | **5 – Multi-region** | Iterate over multiple GAR locations and registries | 🔲 Planned |
 
 ---
@@ -44,16 +44,18 @@ cmd/gar-cleanup/
 
 internal/
   policy/
-    policy.go         ← YAML policy loading, tag protection, duration parsing
+    policy.go         ← YAML policy loading, tag regex protection, duration parsing
+    policy_test.go    ← Policy validation and evaluation tests
   registry/
     registry.go       ← Client interface (ListRepositories, ListImages, Delete, Untag)
-    gar.go            ← GARClient (stub → phase 3) + FakeClient for tests
+    gar.go            ← GARClient stub (→ real API in phase 3) + FakeClient for tests
   engine/
     engine.go         ← Orchestrates inventory → evaluation → delete → audit
+    engine_test.go    ← Engine tests using FakeClient
   k8s/
-    guard.go          ← Guard interface, NoopGuard, ClusterGuard stub (→ phase 2)
+    guard.go          ← Guard interface, NoopGuard, ClusterGuard stub (→ client-go in phase 2)
   audit/
-    audit.go          ← Writer interface, LogWriter, BigQueryWriter stub (→ phase 4)
+    audit.go          ← Writer interface, LogWriter (active), BigQueryWriter stub (→ phase 4)
 
 terraform/
   main.tf             ← Service account, Cloud Run Job, Scheduler, BigQuery table
@@ -61,6 +63,7 @@ terraform/
   outputs.tf          ← Output values
 
 policy.yaml           ← Default policy (dry_run: true, keep: 10, max_age: 30d)
+gcr-cleanup.sh        ← Deprecated legacy shell script (replaced by this tool)
 ```
 
 ---
