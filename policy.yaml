@@ -1,0 +1,19 @@
+# gar-cleanup policy — changes here are reviewed via PR and applied on next run.
+# Dry-run is the default; set dry_run: false only after reviewing the run log.
+dry_run: true
+
+# Retain the 10 most-recently pushed images per repository.
+keep: 10
+
+# Delete images older than 30 days (supports "d" and standard Go durations).
+max_age: 30d
+
+# Tags matching these patterns are never deleted regardless of age.
+# ^v\d+\.\d+\.\d+$ protects semantic version releases (v1.2.3).
+protect_tags:
+  - "^v\\d+\\.\\d+\\.\\d+$"
+  - "^stable$"
+  - "^production$"
+
+# Untagged digests (floating layers, failed pushes) are deleted immediately.
+delete_untagged: true
